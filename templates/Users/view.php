@@ -19,8 +19,16 @@
             <h3><?= h($user->id) ?></h3>
             <table>
                 <tr>
+                    <th><?= __('Name') ?></th>
+                    <td><?= ($user->name) ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Email') ?></th>
-                    <td><?= h($user->email) ?></td>
+                    <td><?= ($user->email) ?></td>
+                </tr>
+                <tr>
+                    <th><?= __('Phone') ?></th>
+                    <td><?= ($user->phone) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Id') ?></th>
