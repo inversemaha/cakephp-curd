@@ -155,20 +155,30 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
-        $authenticationService = new AuthenticationService([
-            'unauthenticatedRedirect' => Router::url('/users/login'),
-            'queryParam' => 'redirect',
-        ]);
 
-        // Load identifiers, ensure we check email and password fields
-        $authenticationService->loadIdentifier('Authentication.Password', [
-            'fields' => [
-                'username' => 'email',
-                'password' => 'password',
-            ]
-        ]);
+        $authenticationService = new AuthenticationService();
 
         if($request->getParam('prefix') === 'Api'){
+
+            // Load identifiers, ensure we check email and password fields
+            $authenticationService->loadIdentifier('Authentication.Password', [
+                'fields' => [
+                    'username' => 'email',
+                    'password' => 'password',
+                ]
+            ]);
+
+            // Load the authenticators, you want session first
+            $authenticationService->loadAuthenticator('Authentication.Session');
+            // Configure form data check to pick email and password
+            $authenticationService->loadAuthenticator('Authentication.Form', [
+                'fields' => [
+                    'username' => 'email',
+                    'password' => 'password',
+                ],
+                'loginUrl' => Router::url('/api/login.json'),
+            ]);
+
             $authenticationService->loadIdentifier('Authentication.JwtSubject');
             $authenticationService->loadAuthenticator('Authentication.Jwt', [
                 'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
@@ -176,6 +186,19 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 'returnPayload' => false
             ]);
         }else{
+            $authenticationService = new AuthenticationService([
+                'unauthenticatedRedirect' => Router::url('/users/login'),
+                'queryParam' => 'redirect',
+            ]);
+
+            // Load identifiers, ensure we check email and password fields
+            $authenticationService->loadIdentifier('Authentication.Password', [
+                'fields' => [
+                    'username' => 'email',
+                    'password' => 'password',
+                ]
+            ]);
+
             // Load the authenticators, you want session first
             $authenticationService->loadAuthenticator('Authentication.Session');
             // Configure form data check to pick email and password

@@ -99,9 +99,9 @@ return static function (RouteBuilder $routes) {
 
                $builder->get('/user/list', ['controller' => 'Api', 'action' => 'listUsers', 'prefix' => 'Api']);
 
-               $builder->get('/user/update', ['controller' => 'Api', 'action' => 'updateUser', 'prefix' => 'Api'])->setPass(["id"]);
+               $builder->put('/user/update/:id', ['controller' => 'Api', 'action' => 'updateUser', 'prefix' => 'Api'])->setPass(["id"]);
 
-               $builder->get('/user/delete', ['controller' => 'Api', 'action' => 'deleteUser', 'prefix' => 'Api'])->setPass(["id"]);
+               $builder->delete('/user/delete/:id', ['controller' => 'Api', 'action' => 'deleteUser', 'prefix' => 'Api'])->setPass(["id"]);
 
             });
 };

@@ -13,6 +13,11 @@ use Firebase\JWT\JWT;
  */
 class ApiController extends AppController
 {
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadModel("Users");
+    }
     public function loginUser()
     {
 
@@ -21,15 +26,16 @@ class ApiController extends AppController
         // regardless of POST or GET, redirect if user is logged in
         if ($result && $result->isValid()) {
 
-            $key = Security::getSalt();
+           // $key = Security::getSalt();
             // Token = xxx.yyy.zzz
+            $privateKey = file_get_contents(CONFIG . '/jwt.pem');
             $payload = [
                 "sub" => $result->getData()->id, // Subject of the token
                 "exp" => time() + 604800, // Expiration time
                 "iat" => time(), // Time when JWT was issued.
             ];
             // Set the JWT token in the response
-            $token = JWt::encode($payload, $key, "HS256");
+            $token = JWt::encode($payload, $privateKey, "HS256");
 
             // $this->Auth->setUser($user);
             $status = true;
@@ -92,7 +98,7 @@ class ApiController extends AppController
     {
         // Edit User form data
         $this->request->allowMethod(["put","post"]);
-        $user_id = $this->request->getParam("user_id");
+        $user_id = $this->request->getParam("id");
 
         $userInfo = $this->request->getData();
         //check user address
@@ -126,7 +132,7 @@ class ApiController extends AppController
     {
         // List Users
         $this->request->allowMethod(["get"]);
-        $users = $this->Users->find()->toList();
+        $users = $this->Users->find()->all();
         $this->set([
             "status" => true,
             "message" => "User list",
@@ -139,7 +145,7 @@ class ApiController extends AppController
     {
         $this->request->allowMethod(["delete"]);
         // List Users
-        $user_id = $this->request->getParam("user_id");
+        $user_id = $this->request->getParam("id");
         $userData = $this->Users->get($user_id);
         if (!empty($userData)) {
             // user exist
