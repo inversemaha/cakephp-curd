@@ -10,4 +10,6 @@
     <?= $this->Form->submit(__('Login')); ?>
     <?= $this->Form->end() ?>
 
+
+    <?= $this->Html->link("Register", ['action' => 'add'], ['class' => 'button btn-success']) ?>
 </div>

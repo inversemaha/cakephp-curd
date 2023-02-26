@@ -17,10 +17,10 @@ class ApiController extends AppController
     {
         parent::initialize();
         $this->loadModel("Users");
+        $this->Authentication->addUnauthenticatedActions(['login', 'register']);
     }
     public function loginUser()
     {
-
         // Login User form data with jwt token value
         $result = $this->Authentication->getResult();
         // regardless of POST or GET, redirect if user is logged in
